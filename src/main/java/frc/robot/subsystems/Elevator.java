@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 
 public class Elevator implements AutoCloseable {
   // This gearbox represents a gearbox containing 4 Vex 775pro motors.
-  private final DCMotor m_elevatorGearbox = DCMotor.getVex775Pro(4);
+  private final DCMotor m_elevatorGearbox = DCMotor.getNEO(2);
 
   // Standard classes for controlling our elevator
   private final ProfiledPIDController m_controller =
@@ -51,7 +51,7 @@ public class Elevator implements AutoCloseable {
           m_elevatorGearbox,
           Constants.kElevatorGearing,
           Constants.kCarriageMass,
-          Constants.kElevatorDrumRadius,
+          Constants.kElevatorSprocketDiameter,
           Constants.kMinElevatorHeightMeters,
           Constants.kMaxElevatorHeightMeters,
           true,
@@ -62,11 +62,11 @@ public class Elevator implements AutoCloseable {
   private final PWMSim m_motorSim = new PWMSim(m_motor);
 
   // Create a Mechanism2d visualization of the elevator
-  private final Mechanism2d m_mech2d = new Mechanism2d(10, 10);
-  private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Elevator Root", 5, 0);
+  private final Mechanism2d m_mech2d = new Mechanism2d(8, 5);
+  private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Elevator Root", 4, 0);
   private final MechanismLigament2d m_elevatorMech2d =
       m_mech2dRoot.append(
-          new MechanismLigament2d("Elevator", 2*m_elevatorSim.getPositionMeters(), 90));
+          new MechanismLigament2d("Elevator", m_elevatorSim.getPositionMeters(), 90));
 
   /** Subsystem constructor. */
   public Elevator() {
@@ -75,6 +75,8 @@ public class Elevator implements AutoCloseable {
     // Publish Mechanism2d to SmartDashboard
     // To view the Elevator visualization, select Network Tables -> SmartDashboard -> Elevator Sim
     m_mech2d.setBackgroundColor(new Color8Bit(Color.kWhite));
+    m_elevatorMech2d.setLineWeight(4.0);
+    m_elevatorMech2d.setColor(new Color8Bit(Color.kBlue));
     SmartDashboard.putData("Elevator Sim", m_mech2d);
   }
 
